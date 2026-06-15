@@ -41,6 +41,23 @@ jobs:
           flavor: |
             latest=auto
 
+- name: Create Dockerfile
+  run: |
+    cat > Dockerfile << 'EOF'
+    FROM python:3.11-slim
+    # [Add your complete Dockerfile content here]
+    EOF
+
+- name: Construir i publicar imatge Docker
+  uses: docker/build-push-action@v5
+  with:
+    context: .
+    push: true
+    tags: ${{ steps.meta.outputs.tags }}
+    labels: ${{ steps.meta.outputs.labels }}
+    cache-from: type=registry,ref=${{ env.IMAGE_NAME }}:buildcache
+    cache-to: type=registry,ref=${{ env.IMAGE_NAME }}:buildcache,mode=max
+    
       - name: Construir i publicar imatge Docker
         uses: docker/build-push-action@v5
         with:
